@@ -106,12 +106,3 @@ Here are the holidays available in the dropdown:
 This project is open-source and available under the MIT License.
 
 ---
-
-## Acknowledgments
-
-- Thanks to the open-source community for making it possible to build web apps like this using simple web technologies (HTML, CSS, JavaScript).
-- Inspiration for the design was drawn from clean and minimalist UI trends, like Apple’s design philosophy.
-
----
-
-That's it! You can now keep track of upcoming holidays and see a real-time countdown, along with details about each event, in an interactive and visually appealing way. Enjoy using the site and feel free to modify or enhance it further!
