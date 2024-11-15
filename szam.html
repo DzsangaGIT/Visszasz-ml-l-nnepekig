@@ -3,37 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ünnepek és Szünetek Visszaszámláló</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Visszaszámláló ünnepekig</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Visszaszámláló ünnepekig</h1>
-            <p>Válassz egy ünnepet és tudd meg, hány nap van még hátra!</p>
-        </div>
-        
-        <div class="holiday-selector">
-            <select id="holiday-selector">
-            </select>
-        </div>
-
-        <div class="countdown">
-            <p id="holiday-name">Következő ünnep:</p>
-            <p id="countdown">00d 00h 00m 00s</p>
-            <p id="holiday-year">2024</p>
-        </div>
-        
-        <div id="holiday-modal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2 id="holiday-title">Ünnep Részletei</h2>
-                <p id="holiday-details">Részletek</p>
-            </div>
-        </div>
+        <h1 class="main-title">Visszaszámláló ünnepekig</h1>
+        <p id="holiday-name" class="holiday-name"></p>
+        <div id="countdown" class="countdown"></div>
+        <select id="holiday-select" class="holiday-select"></select>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
