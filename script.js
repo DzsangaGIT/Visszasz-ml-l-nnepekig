@@ -1,114 +1,100 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const holidaySelector = document.getElementById('holiday-selector');
-    const countdownElement = document.getElementById('countdown');
-    const holidayNameElement = document.getElementById('holiday-name');
-    const holidayYearElement = document.getElementById('holiday-year');
-    const modal = document.getElementById('holiday-modal');
-    const closeModal = document.querySelector('.close');
-    const holidayDetailsElement = document.getElementById('holiday-details');
-    const holidayTitleElement = document.getElementById('holiday-title');
+const holidays = [
+    { name: "Újév", date: "01-01" },
+    { name: "Nemzeti ünnep", date: "03-15" },
+    { name: "Húsvétvasárnap", calculate: calculateEaster },
+    { name: "Húsvéthétfő", calculate: calculateEasterMonday },
+    { name: "Munka ünnepe", date: "05-01" },
+    { name: "Pünkösdvasárnap", calculate: calculatePentecost },
+    { name: "Pünkösdhétfő", calculate: calculatePentecostMonday },
+    { name: "Szent István ünnepe", date: "08-20" },
+    { name: "Nemzeti ünnep", date: "10-23" },
+    { name: "Mindenszentek", date: "11-01" },
+    { name: "Karácsony", date: "12-25" },
+    { name: "Karácsony második napja", date: "12-26" },
+    { name: "Szilveszter", date: "12-31" }
+];
 
-    function calculateEaster(year) {
-        const a = year % 19;
-        const b = Math.floor(year / 100);
-        const c = year % 100;
-        const d = Math.floor(b / 4);
-        const e = b % 4;
-        const f = Math.floor((b + 8) / 25);
-        const g = Math.floor((b - f + 1) / 3);
-        const h = (19 * a + b - d - g + 15) % 30;
-        const i = Math.floor(c / 4);
-        const k = c % 4;
-        const l = (32 + 2 * e + 2 * i - h - k) % 7;
-        const m = Math.floor((a + 11 * h + 22 * l) / 451);
-        const month = Math.floor((h + l - 7 * m + 114) / 31);
-        const day = ((h + l - 7 * m + 114) % 31) + 1;
-        return new Date(year, month - 1, day);
+const holidaySelect = document.getElementById('holiday-select');
+const countdownDiv = document.getElementById('countdown');
+const holidayNameDiv = document.getElementById('holiday-name');
+
+function calculateEaster(year) {
+    const A = year % 19;
+    const B = year % 4;
+    const C = year % 7;
+    const D = (19 * A + 24) % 30;
+    const E = (2 * B + 4 * C + 6 * D + 5) % 7;
+    let day = 22 + D + E;
+
+    if (D === 29 && E === 6) day = 50;
+    if (D === 28 && E === 6 && A > 10) day = 49;
+
+    const month = day > 31 ? 4 : 3;
+    const date = day > 31 ? day - 31 : day;
+    return `${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+}
+
+function calculateEasterMonday(year) {
+    const easter = new Date(calculateEaster(year));
+    easter.setDate(easter.getDate() + 1);
+    return easter.toISOString().split('T')[0];
+}
+
+function calculatePentecost(year) {
+    const easter = new Date(calculateEaster(year));
+    easter.setDate(easter.getDate() + 49);
+    return easter.toISOString().split('T')[0];
+}
+
+function calculatePentecostMonday(year) {
+    const easter = new Date(calculateEaster(year));
+    easter.setDate(easter.getDate() + 50);
+    return easter.toISOString().split('T')[0];
+}
+
+function getNextHolidayDate(holiday, year) {
+    const today = new Date();
+    let holidayDate;
+
+    if (holiday.calculate) {
+        holidayDate = new Date(holiday.calculate(year));
+    } else {
+        holidayDate = new Date(`${year}-${holiday.date}`);
     }
 
-    const holidays = [
-        { name: 'Újév', details: 'Újév - Az év első napja!', date: '01-01' },
-        { name: 'Nemzeti Ünnep', details: 'Nemzeti Ünnep - Március 15.', date: '03-15' },
-        { name: 'Húsvétvasárnap', details: 'Húsvétvasárnap - Jézus feltámadása!', date: 'easter' },
-        { name: 'Húsvéthétfő', details: 'Húsvéthétfő - Húsvét utáni hétfő.', date: 'easter+1' },
-        { name: 'Munka Ünnepe', details: 'Munka Ünnepe - A munka és munkások ünnepe!', date: '05-01' },
-        { name: 'Pünkösdvasárnap', details: 'Pünkösdvasárnap - A Szentlélek eljövetelének ünnepe!', date: 'easter+49' }, 
-        { name: 'Pünkösdhétfő', details: 'Pünkösdhétfő - Pünkösdi hétfő, hagyományos fürdőzés és locsolkodás.', date: 'easter+50' },
-        { name: 'Szent István Ünnepe', details: 'Szent István Ünnepe - Magyar államalapítás és István király szentté avatása.', date: '08-20' },
-        { name: 'Október 23.', details: 'Október 23. - A magyar forradalom és szabadságharc ünnepe.', date: '10-23' },
-        { name: 'Mindenszentek', details: 'Mindenszentek - A szentek és mártírok emlékünnepe.', date: '11-01' },
-        { name: 'Karácsony', details: 'Karácsony - Jézus születése.', date: '12-25' },
-        { name: 'Karácsony Második Napja', details: 'Karácsony Második Napja - A karácsonyi ünnepség folytatása.', date: '12-26' },
-        { name: 'Szilveszter', details: 'Szilveszter - Az év utolsó napja, búcsúztatás.', date: '12-31' }
-    ];
-
-    function calculateHolidayDate(holiday, year) {
-        if (holiday.date === 'easter') {
-            return calculateEaster(year);
-        }
-        if (holiday.date.includes('easter+')) {
-            const easterDate = calculateEaster(year);
-            const additionalDays = parseInt(holiday.date.split('+')[1], 10);
-            easterDate.setDate(easterDate.getDate() + additionalDays);
-            return easterDate;
-        }
-        const [month, day] = holiday.date.split('-');
-        return new Date(year, month - 1, day);
+    if (holidayDate < today) {
+        year++;
+        holidayDate = holiday.calculate ? new Date(holiday.calculate(year)) : new Date(`${year}-${holiday.date}`);
     }
+    return holidayDate;
+}
 
-    function updateCountdown(holiday) {
-        const now = new Date();
-        const holidayDate = calculateHolidayDate(holiday, now.getFullYear());
+function updateCountdown() {
+    const selectedHoliday = holidays[holidaySelect.selectedIndex];
+    const year = new Date().getFullYear();
+    const holidayDate = getNextHolidayDate(selectedHoliday, year);
+    const diff = holidayDate - new Date();
 
-        if (holidayDate < now) {
-            holidayDate.setFullYear(holidayDate.getFullYear() + 1);
-            holidayYearElement.textContent = holidayDate.getFullYear();
-            holidayNameElement.textContent = `${holiday.name} most ${holidayYearElement.textContent}-ben lesz!`;
-        } else {
-            holidayYearElement.textContent = now.getFullYear();
-            holidayNameElement.textContent = `Következő ünnep: ${holiday.name} ${holidayYearElement.textContent}`;
-        }
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        const timeRemaining = holidayDate - now;
-        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+    countdownDiv.textContent = `${days} nap, ${hours} óra, ${minutes} perc, ${seconds} másodperc`;
+    holidayNameDiv.textContent = `${selectedHoliday.name} dátuma: ${holidayDate.toISOString().split('T')[0]}`;
+}
 
-        countdownElement.textContent = `Hátra van: ${days} nap ${hours} óra ${minutes} perc ${seconds} másodperc`;
-    }
-
-    function showModal(holiday) {
-        holidayTitleElement.textContent = holiday.name;
-        holidayDetailsElement.textContent = holiday.details;
-        modal.style.display = 'block';
-    }
-
-    closeModal.addEventListener('click', function () {
-        modal.style.display = 'none';
-    });
-
+function populateHolidaySelect() {
     holidays.forEach(holiday => {
         const option = document.createElement('option');
-        option.value = holiday.name.toLowerCase().replace(/ /g, '_');
         option.textContent = holiday.name;
-        holidaySelector.appendChild(option);
+        holidaySelect.appendChild(option);
     });
+}
 
-    updateCountdown(holidays[0]);
+holidaySelect.addEventListener('change', updateCountdown);
 
-    holidaySelector.addEventListener('change', function () {
-        const selectedHoliday = holidays.find(h => h.name.toLowerCase().replace(/ /g, '_') === holidaySelector.value);
-        if (selectedHoliday) {
-            updateCountdown(selectedHoliday);
-            showModal(selectedHoliday);
-        }
-    });
-
-    setInterval(() => {
-        const selectedHoliday = holidays.find(h => h.name.toLowerCase().replace(/ /g, '_') === holidaySelector.value);
-        if (selectedHoliday) {
-            updateCountdown(selectedHoliday);
-        }
-    }, 1000);
-});
+populateHolidaySelect();
+holidaySelect.selectedIndex = 0;
+updateCountdown();
+setInterval(updateCountdown, 1000);
