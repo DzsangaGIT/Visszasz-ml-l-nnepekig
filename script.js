@@ -1,17 +1,17 @@
 const holidays = [
-    { name: "Újév", date: "01-01" },
-    { name: "Nemzeti ünnep", date: "03-15" },
-    { name: "Húsvétvasárnap", calculate: calculateEaster },
-    { name: "Húsvéthétfő", calculate: calculateEasterMonday },
-    { name: "Munka ünnepe", date: "05-01" },
-    { name: "Pünkösdvasárnap", calculate: calculatePentecost },
-    { name: "Pünkösdhétfő", calculate: calculatePentecostMonday },
-    { name: "Szent István ünnepe", date: "08-20" },
-    { name: "Nemzeti ünnep", date: "10-23" },
-    { name: "Mindenszentek", date: "11-01" },
-    { name: "Karácsony", date: "12-25" },
-    { name: "Karácsony második napja", date: "12-26" },
-    { name: "Szilveszter", date: "12-31" }
+    { name: "Újév", date: "01-01", background: "url('assets/new_year.jpg')" },
+    { name: "Nemzeti ünnep", date: "03-15", background: "url('assets/nemzeti.jpg')" },
+    { name: "Húsvétvasárnap", calculate: calculateEaster, background: "url('assets/husvet.jpg')" },
+    { name: "Húsvéthétfő", calculate: calculateEasterMonday, background: "url('assets/husvet.jpg')" },
+    { name: "Munka ünnepe", date: "05-01", background: "url('assets/munka.jpg')" },
+    { name: "Pünkösdvasárnap", calculate: calculatePentecost, background: "url('assets/punkosd.jpg')" },
+    { name: "Pünkösdhétfő", calculate: calculatePentecostMonday, background: "url('assets/punkosd.jpg')" },
+    { name: "Szent István ünnepe", date: "08-20", background: "url('assets/istvan.jpg')" },
+    { name: "Nemzeti ünnep", date: "10-23", background: "url('assets/nemzeti2.jpg')" },
+    { name: "Mindenszentek", date: "11-01", background: "url('assets/szentek.jpg')" },
+    { name: "Karácsony", date: "12-25", background: "url('assets/christmas.jpg')" },
+    { name: "Karácsony második napja", date: "12-26", background: "url('assets/christmas2.jpg')" },
+    { name: "Szilveszter", date: "12-31", background: "url('assets/szilveszter.jpg')" }
 ];
 
 const holidaySelect = document.getElementById('holiday-select');
@@ -82,6 +82,7 @@ function updateCountdown() {
 
     countdownDiv.textContent = `${days} nap, ${hours} óra, ${minutes} perc, ${seconds} másodperc`;
     holidayNameDiv.textContent = `${selectedHoliday.name} dátuma: ${holidayDate.toISOString().split('T')[0]}`;
+    document.body.style.backgroundImage = selectedHoliday.background;
 }
 
 function populateHolidaySelect() {
