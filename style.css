@@ -4,15 +4,15 @@ body {
     padding: 0;
     font-family: 'Inter', sans-serif;
     color: #fff;
-    background: linear-gradient(145deg, #141e30, #243b55);
     background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
     position: relative;
-    transition: background-image 1s ease-in-out;
+    transition: background 2s ease-in-out; /* Animált átmenet a háttérkép változtatásakor */
 }
 
 /* Központi tartalom */
